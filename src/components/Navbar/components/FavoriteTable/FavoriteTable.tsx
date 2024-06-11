@@ -1,11 +1,12 @@
 "use client";
-import { Person } from "../../../../models";
-import { addFavorite } from "../../../..//redux/states";
-import { AppStore } from "../../../..//redux/store";
-import { Checkbox } from "@mui/material";
-import { GridColDef, GridRenderCellParams, DataGrid } from "@mui/x-data-grid";
+import { Delete } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { addFavorite, removeFavorite } from "../../../..//redux/states";
+import { AppStore } from "../../../..//redux/store";
+import { Person } from "../../../../models";
 
 export type FavoriteTableProps = {
   // types...
@@ -26,13 +27,12 @@ const FavoriteTable: React.FC<FavoriteTableProps> = ({}) => {
     return selectedPeople.filter((p) => p.id !== person.id);
   };
 
-  const handleChange = (person: Person) => {
-    const filteredPeople = findPerson(person)
-      ? filterPerson(person)
-      : [...selectedPeople, person];
-    dispach(addFavorite(filteredPeople));
+  const handleClick = (person: Person) => {
+    const filteredPeople = filterPerson(person);
+    dispach(removeFavorite(person)); // Aquí estamos pasando la persona correcta
     setSelectedPeople(filteredPeople);
   };
+  
 
   const columns: GridColDef[] = [
     {
@@ -44,11 +44,9 @@ const FavoriteTable: React.FC<FavoriteTableProps> = ({}) => {
       renderCell: (params: GridRenderCellParams) => (
         <>
           {
-            <Checkbox
-              size="small"
-              checked={findPerson(params.row)}
-              onChange={() => handleChange(params.row)}
-            />
+            <IconButton onClick={()=>handleClick(params.row)} color="error" aria-label="favorites" component="label">
+            <Delete/>
+          </IconButton>
           }
         </>
       ),
@@ -72,6 +70,12 @@ const FavoriteTable: React.FC<FavoriteTableProps> = ({}) => {
       flex: 1,
       renderCell: (params: GridRenderCellParams) => <>{params.value}</>,
     },
+    {
+      field: "levelOfHappiness",
+      headerName: "Level of Hapinness",
+      flex: 1,
+      renderCell: (params: GridRenderCellParams) => <>{params.value}</>,
+    }
   ];
   return (
     <DataGrid

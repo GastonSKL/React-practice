@@ -4,7 +4,7 @@ import { addFavorite } from "../../../../redux/states";
 import { AppStore } from "../../../../redux/store";
 import { Checkbox } from "@mui/material";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export type PeopleTableProps = {
@@ -15,8 +15,13 @@ const PeopleTable: React.FC<PeopleTableProps> = ({}) => {
   const [selectedPeople, setSelectedPeople] = useState<Person[]>([]);
 
   const dispach = useDispatch();
-
+  
   const statePeople = useSelector((store: AppStore) => store.people);
+  const stateFavorites = useSelector((store: AppStore) => store.favorites);
+
+  useEffect(() => {
+    setSelectedPeople(stateFavorites);
+  }, [stateFavorites]);
 
   const findPerson = (person: Person) => {
     return !!selectedPeople.find((p) => p.id === person.id);
