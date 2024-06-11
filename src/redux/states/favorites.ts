@@ -11,7 +11,7 @@ export const favoritesSlice = createSlice({
     : initialState,
   reducers: {
     addFavorite: (state, action)=>{
-        setLocalStorage(LocalStorageTypes.FAVORITES, state);
+        setLocalStorage(LocalStorageTypes.FAVORITES, action.payload);
         return action.payload;
     },
     removeFavorite: (state, action) => {
